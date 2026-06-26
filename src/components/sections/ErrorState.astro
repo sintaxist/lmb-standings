@@ -1,0 +1,22 @@
+---
+// Se muestra solo si la API falló y no había datos en caché para degradar.
+---
+
+<section class="bg-surface-page py-20">
+  <div class="shell">
+    <div class="mx-auto max-w-md rounded-2xl border border-negative/20 bg-negative-soft px-6 py-8 text-center">
+      <p class="font-display text-2xl font-bold uppercase text-negative">
+        No se pudieron cargar los datos
+      </p>
+      <p class="mt-2 font-sans text-sm text-muted">
+        Hubo un problema al conectar con la API de la MLB. Intenta de nuevo en unos momentos.
+      </p>
+      <a
+        href="/"
+        class="mt-5 inline-block rounded-lg bg-brand-red px-5 py-2.5 font-sans text-xs font-bold uppercase tracking-wide text-white transition-transform hover:scale-105"
+      >
+        Recargar
+      </a>
+    </div>
+  </div>
+</section>

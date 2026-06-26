@@ -1,0 +1,35 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteNav from "@/components/layout/SiteNav.astro";
+import SiteHeader from "@/components/layout/SiteHeader.astro";
+import SiteFooter from "@/components/layout/SiteFooter.astro";
+import HighlightsSection from "@/components/sections/HighlightsSection.astro";
+import StandingsSection from "@/components/sections/StandingsSection.astro";
+import SponsorBanner from "@/components/sections/SponsorBanner.astro";
+import ErrorState from "@/components/sections/ErrorState.astro";
+import TeamDetailModal from "@/components/ui/TeamDetailModal.astro";
+import { loadStandingsPage } from "@/lib/page-data";
+
+// Toda la lógica (fetch + caché + derivados + formato) vive en page-data.
+// Aquí solo repartimos el resultado a cada sección.
+const { snapshot, highlights, details, updatedLabel, hasError } =
+  await loadStandingsPage();
+---
+
+<BaseLayout>
+  <SiteNav />
+  <SiteHeader updatedLabel={updatedLabel} stale={snapshot.stale} />
+
+  {hasError ? (
+    <ErrorState />
+  ) : (
+    <main>
+      <HighlightsSection highlights={highlights} />
+      <StandingsSection snapshot={snapshot} />
+      <SponsorBanner />
+      <TeamDetailModal details={details} />
+    </main>
+  )}
+
+  <SiteFooter year={2026} />
+</BaseLayout>

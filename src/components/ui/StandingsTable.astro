@@ -1,0 +1,116 @@
+---
+import type { TeamStanding } from "@/lib/mlb";
+import { differentialLabel } from "@/lib/mlb";
+import TeamLogo from "./TeamLogo.astro";
+import StreakPill from "./StreakPill.astro";
+
+interface Props {
+  teams: TeamStanding[];
+  /** id del tbody para que el controlador reordene/filtre filas. */
+  bodyId: string;
+}
+
+const { teams, bodyId } = Astro.props;
+
+const COLUMNS = [
+  { label: "#", tip: "Posición dentro de la división" },
+  { label: "Equipo", tip: "" },
+  { label: "W", tip: "Juegos ganados" },
+  { label: "L", tip: "Juegos perdidos" },
+  { label: "PCT", tip: "Porcentaje de victorias (de 0 a 1)" },
+  { label: "GB", tip: "Juegos detrás del líder de la división" },
+  { label: "Últ.10", tip: "Récord en los últimos 10 juegos" },
+  { label: "Racha", tip: "Victorias (W) o derrotas (L) consecutivas" },
+  { label: "RS", tip: "Carreras anotadas (a favor)" },
+  { label: "RA", tip: "Carreras permitidas (en contra)" },
+  { label: "DIF", tip: "Diferencia de carreras: anotadas − permitidas" },
+  { label: "Casa", tip: "Récord jugando como local" },
+  { label: "Visita", tip: "Récord jugando como visitante" },
+  { label: "", tip: "" },
+] as const;
+
+function diffClass(diff: number): string {
+  if (diff > 0) return "text-positive";
+  if (diff < 0) return "text-negative";
+  return "text-muted";
+}
+---
+
+<div class="overflow-x-auto rounded-xl border border-line bg-surface shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+  <table class="w-full min-w-[860px] border-collapse text-sm">
+    <thead>
+      <tr class="bg-brand-navy text-left font-sans text-[11px] font-bold uppercase tracking-wider text-white/85">
+        {COLUMNS.map((col, i) => (
+          <th
+            class:list={[
+              "whitespace-nowrap px-3 py-3",
+              i === 1 ? "min-w-[160px] text-left" : "text-center",
+            ]}
+          >
+            {col.tip ? (
+              <span
+                data-tip={col.tip}
+                tabindex="0"
+                class="cursor-help underline decoration-white/30 decoration-dotted underline-offset-4 outline-none focus-visible:decoration-white"
+              >
+                {col.label}
+              </span>
+            ) : (
+              col.label
+            )}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody id={bodyId} class="tabular">
+      {teams.map((team) => {
+        const streakSort = team.streak.isWin ? team.streak.length : -team.streak.length;
+        return (
+          <tr
+            class="standings-row whitespace-nowrap border-t border-line text-center text-ink transition-colors hover:bg-surface-muted"
+            data-name={team.name.toLowerCase()}
+            data-division={team.division}
+            data-rank={team.rank}
+            data-pct={team.pctValue}
+            data-wins={team.wins}
+            data-losses={team.losses}
+            data-gb={team.gamesBackValue}
+            data-streak={streakSort}
+            data-rundiff={team.runDifferential}
+          >
+            <td class="px-3 py-3 font-display text-base text-muted">{team.rank}</td>
+            <td class="px-3 py-3 text-left">
+              <span class="flex items-center gap-2.5">
+                <TeamLogo src={team.logo} name={team.name} size={28} />
+                <span class="font-sans font-semibold">{team.name}</span>
+              </span>
+            </td>
+            <td class="px-3 py-3 font-semibold">{team.wins}</td>
+            <td class="px-3 py-3 font-semibold">{team.losses}</td>
+            <td class="px-3 py-3 font-semibold">{team.pct}</td>
+            <td class="px-3 py-3 text-muted">{team.gamesBack}</td>
+            <td class="px-3 py-3">{team.lastTen.label}</td>
+            <td class="px-3 py-3"><StreakPill streak={team.streak} size="sm" /></td>
+            <td class="px-3 py-3">{team.runsScored}</td>
+            <td class="px-3 py-3">{team.runsAllowed}</td>
+            <td class:list={["px-3 py-3 font-semibold", diffClass(team.runDifferential)]}>
+              {differentialLabel(team.runDifferential)}
+            </td>
+            <td class="px-3 py-3">{team.home.label}</td>
+            <td class="px-3 py-3">{team.away.label}</td>
+            <td class="px-3 py-3">
+              <button
+                type="button"
+                data-team-trigger
+                data-team-id={team.id}
+                class="rounded-md border border-line px-3 py-1 font-sans text-[11px] font-semibold uppercase tracking-wide text-muted transition-colors hover:border-brand-navy hover:text-brand-navy"
+              >
+                Ver
+              </button>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

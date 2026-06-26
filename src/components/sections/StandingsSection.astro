@@ -1,0 +1,71 @@
+---
+import type { StandingsSnapshot } from "@/lib/mlb";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import ViewControls from "@/components/ui/ViewControls.astro";
+import TeamCard from "@/components/ui/TeamCard.astro";
+import StandingsTable from "@/components/ui/StandingsTable.astro";
+
+interface Props {
+  snapshot: StandingsSnapshot;
+}
+
+const { snapshot } = Astro.props;
+const { divisions } = snapshot;
+
+const emptyClass =
+  "hidden rounded-xl border border-dashed border-line bg-surface px-6 py-10 text-center font-sans text-sm text-muted";
+---
+
+<section id="standings" class="bg-surface-page pb-16">
+  <ViewControls />
+
+  <div class="shell flex flex-col gap-12">
+    <!-- Vista TARJETAS -->
+    <div id="card-view" class="flex flex-col gap-12">
+      {divisions.map((division) => (
+        <div data-division-block data-division={division.key} class="flex flex-col gap-6">
+          <SectionHeading kicker="División" title={division.name}>
+            <span
+              data-count
+              class="whitespace-nowrap rounded-full bg-surface px-3 py-1 font-sans text-xs font-semibold text-muted ring-1 ring-line"
+            >
+              {division.teams.length} equipos
+            </span>
+          </SectionHeading>
+          <div
+            data-sortable
+            class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            {division.teams.map((team, i) => <TeamCard team={team} index={i} />)}
+          </div>
+          <p data-empty class={emptyClass}>Sin equipos que coincidan con la búsqueda.</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Vista TABLA -->
+    <div id="table-view" class="flex flex-col gap-12 hidden">
+      {divisions.map((division) => (
+        <div data-division-block data-division={division.key} class="flex flex-col gap-6">
+          <SectionHeading kicker="División" title={division.name}>
+            <span
+              data-count
+              class="whitespace-nowrap rounded-full bg-surface px-3 py-1 font-sans text-xs font-semibold text-muted ring-1 ring-line"
+            >
+              {division.teams.length} equipos
+            </span>
+          </SectionHeading>
+          <StandingsTable teams={division.teams} bodyId={`tbody-${division.key}`} />
+          <p data-empty class={emptyClass}>Sin equipos que coincidan con la búsqueda.</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initStandingsController } from "@/scripts/standings-controller";
+  import { initTooltips } from "@/scripts/tooltips";
+  initStandingsController();
+  initTooltips();
+</script>

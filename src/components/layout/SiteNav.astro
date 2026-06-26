@@ -1,0 +1,102 @@
+---
+// Header de navegación inspirado en el sitio oficial lmb.com.mx.
+// Es maquetado: los enlaces apuntan a "#" salvo "Posiciones" (activo).
+
+const NAV_ITEMS = [
+  "Equipos",
+  "Noticias",
+  "Estadísticas",
+  "Posiciones",
+  "Pizarra",
+  "Movimientos",
+  "Videos",
+  "Roster",
+  "Directorio",
+  "Tienda",
+  "Políticas",
+] as const;
+
+const ACTIVE = "Posiciones";
+---
+
+<nav class="sticky top-0 z-40 bg-brand-navy text-white shadow-md">
+  <div class="shell flex items-center justify-between gap-4 py-3">
+    <a href="#" class="flex flex-shrink-0 items-center" aria-label="Liga Mexicana de Beisbol — inicio">
+      <img src="/img/lmb-logo.png" alt="Liga Mexicana de Beisbol" width="56" height="56" class="h-14 w-auto" />
+    </a>
+
+    <!-- Navegación de escritorio -->
+    <ul class="hidden items-center gap-1 xl:flex">
+      {NAV_ITEMS.map((item) => (
+        <li>
+          <a
+            href="#"
+            aria-current={item === ACTIVE ? "page" : undefined}
+            class:list={[
+              "rounded-md px-2.5 py-2 font-sans text-sm font-semibold transition-colors",
+              item === ACTIVE
+                ? "text-white underline decoration-brand-red decoration-2 underline-offset-[6px]"
+                : "text-white/75 hover:text-white",
+            ]}
+          >
+            {item}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Botón menú móvil -->
+    <button
+      id="nav-toggle"
+      type="button"
+      class="flex h-10 w-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 xl:hidden"
+      aria-label="Abrir menú"
+      aria-controls="nav-mobile"
+      aria-expanded="false"
+    >
+      <svg id="nav-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" />
+      </svg>
+      <svg id="nav-icon-close" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Panel móvil desplegable -->
+  <div id="nav-mobile" class="hidden border-t border-white/10 xl:hidden">
+    <ul class="shell flex flex-col py-2">
+      {NAV_ITEMS.map((item) => (
+        <li>
+          <a
+            href="#"
+            aria-current={item === ACTIVE ? "page" : undefined}
+            class:list={[
+              "block rounded-md px-3 py-2.5 font-sans text-sm font-semibold transition-colors",
+              item === ACTIVE
+                ? "bg-white/10 text-white"
+                : "text-white/80 hover:bg-white/5 hover:text-white",
+            ]}
+          >
+            {item}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<script>
+  const toggle = document.getElementById("nav-toggle");
+  const panel = document.getElementById("nav-mobile");
+  const iconOpen = document.getElementById("nav-icon-open");
+  const iconClose = document.getElementById("nav-icon-close");
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = panel?.classList.toggle("hidden") === false;
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    toggle.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
+    iconOpen?.classList.toggle("hidden", isOpen);
+    iconClose?.classList.toggle("hidden", !isOpen);
+  });
+</script>

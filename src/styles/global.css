@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: theme("colors.surface.page");
+  color: theme("colors.ink");
+  font-family: theme("fontFamily.sans");
+}
+
+/* Numerales tabulares: las cifras de stats no “bailan” al ordenar/filtrar. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+@layer components {
+  /* Contenedor centrado consistente para todas las secciones. */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-5 sm:px-8;
+  }
+
+  /* Encabezado de sección: kicker + título display, estilo Figma. */
+  .section-kicker {
+    @apply font-sans text-xs font-bold uppercase tracking-[0.18em] text-muted;
+  }
+  .section-title {
+    @apply font-display text-4xl font-bold uppercase leading-none tracking-tight text-ink sm:text-5xl;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

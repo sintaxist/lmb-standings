@@ -1,0 +1,45 @@
+---
+interface Props {
+  updatedLabel: string | null;
+  stale?: boolean;
+}
+
+const { updatedLabel, stale = false } = Astro.props;
+---
+
+<header class="relative isolate overflow-hidden border-t-4 border-brand-red bg-ink">
+  <!-- Foto de fondo + velo oscuro para legibilidad -->
+  <img
+    src="/img/hero-bg.png"
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 h-full w-full object-cover opacity-50"
+  />
+  <div
+    class="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/55 to-ink/90"
+    aria-hidden="true"
+  ></div>
+
+  <div class="shell relative flex flex-col items-center gap-4 py-16 text-center sm:py-20">
+    <img src="/img/lmb-logo.png" alt="Liga Mexicana de Beisbol" width="64" height="64" class="h-16 w-auto drop-shadow-lg" />
+
+    <h1 class="font-display text-5xl font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-7xl">
+      Liga Mexicana<br />
+      <span class="text-brand-red">de Beisbol</span>
+    </h1>
+
+    <div class="flex w-full max-w-xl items-center gap-4">
+      <span class="h-px flex-1 bg-gradient-to-l from-white/40 to-transparent" aria-hidden="true"></span>
+      <p class="whitespace-nowrap font-sans text-sm font-semibold uppercase tracking-[0.28em] text-white/70">
+        Tabla de Posiciones · Temporada 2026
+      </p>
+      <span class="h-px flex-1 bg-gradient-to-r from-white/40 to-transparent" aria-hidden="true"></span>
+    </div>
+
+    {updatedLabel && (
+      <p class="mt-1 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-sans text-xs text-white/70 ring-1 ring-white/15 backdrop-blur">
+        {stale ? "Datos en caché · " : "Actualizado "}{updatedLabel}
+      </p>
+    )}
+  </div>
+</header>

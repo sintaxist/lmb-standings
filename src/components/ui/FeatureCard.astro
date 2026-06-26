@@ -1,0 +1,46 @@
+---
+import TeamLogo from "./TeamLogo.astro";
+
+interface Props {
+  kicker: string; // "LÍDER NORTE"
+  logo: string;
+  name: string;
+  value: string; // ".690" | "W4" | "+129"
+  sublabel: string; // "40G · 18P · 58 JJ"
+  tone?: "default" | "positive";
+  trendUp?: boolean; // muestra ▲ junto al valor (rachas)
+}
+
+const {
+  kicker,
+  logo,
+  name,
+  value,
+  sublabel,
+  tone = "default",
+  trendUp = false,
+} = Astro.props;
+---
+
+<article class="flex flex-col gap-3 rounded-xl border border-line bg-surface p-5 shadow-[0_2px_10px_rgba(0,0,0,0.05)]">
+  <p class="section-kicker">{kicker}</p>
+
+  <div class="flex items-center gap-3">
+    <TeamLogo src={logo} name={name} size={40} />
+    <span class="truncate font-sans text-sm font-semibold text-ink">{name}</span>
+  </div>
+
+  <p class="flex items-center gap-1.5">
+    <span
+      class:list={[
+        "font-display text-4xl font-bold leading-none tabular",
+        tone === "positive" ? "text-positive" : "text-ink",
+      ]}
+    >
+      {value}
+    </span>
+    {trendUp && <span class="text-base text-positive" aria-hidden="true">▲</span>}
+  </p>
+
+  <p class="font-sans text-xs text-muted">{sublabel}</p>
+</article>

@@ -1,0 +1,90 @@
+---
+import type { TeamStanding } from "@/lib/mlb";
+import TeamLogo from "./TeamLogo.astro";
+import StatBox from "./StatBox.astro";
+import StreakPill from "./StreakPill.astro";
+
+interface Props {
+  team: TeamStanding;
+  /** Índice para escalonar la animación de entrada. */
+  index?: number;
+}
+
+const { team, index = 0 } = Astro.props;
+
+// Valor con signo para que el orden por "racha" trate W como positivo y L negativo.
+const streakSort = team.streak.isWin ? team.streak.length : -team.streak.length;
+---
+
+<article
+  class="team-card flex flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-[0_2px_12px_rgba(0,0,0,0.07)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.12)] motion-safe:animate-rise"
+  style={`animation-delay:${Math.min(index, 12) * 45}ms`}
+  data-name={team.name.toLowerCase()}
+  data-division={team.division}
+  data-rank={team.rank}
+  data-pct={team.pctValue}
+  data-wins={team.wins}
+  data-losses={team.losses}
+  data-gb={team.gamesBackValue}
+  data-streak={streakSort}
+  data-rundiff={team.runDifferential}
+>
+  <!-- Cabecera oscura -->
+  <header class="relative flex items-center gap-3 bg-ink px-4 pb-4 pt-5">
+    <span
+      class="absolute right-3 top-2.5 rounded-full border border-white/15 bg-black/25 px-2 py-0.5 font-sans text-[11px] font-bold tracking-wider text-white/70"
+    >
+      #{team.rank}
+    </span>
+
+    <TeamLogo src={team.logo} name={team.name} size={52} ring />
+
+    <div class="min-w-0">
+      <h3 class="truncate font-display text-lg font-semibold uppercase leading-none tracking-wide text-white">
+        {team.name}
+      </h3>
+      <p class="mt-1 flex items-baseline gap-1.5">
+        <span class="font-display text-3xl leading-none text-white tabular">{team.pct}</span>
+        <span class="font-sans text-xs font-semibold text-white/45">PCT</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- Cuerpo -->
+  <div class="flex flex-1 flex-col gap-3 p-4">
+    <div class="grid grid-cols-3 gap-2">
+      <StatBox value={team.wins} label="W" />
+      <StatBox value={team.losses} label="L" />
+      <StatBox value={team.gamesBack} label="GB" />
+    </div>
+
+    <div class="flex items-center justify-between px-0.5">
+      <span class="font-sans text-xs font-semibold text-muted">Racha</span>
+      <StreakPill streak={team.streak} />
+    </div>
+
+    <div class="grid grid-cols-3 gap-2 border-t border-line pt-3 text-center">
+      {[
+        { line: team.home, label: "Casa" },
+        { line: team.away, label: "Visita" },
+        { line: team.lastTen, label: "Últ.10" },
+      ].map(({ line, label }) => (
+        <div>
+          <p class="font-sans text-sm font-semibold text-ink tabular">{line.label}</p>
+          <p class="mt-0.5 font-sans text-[9px] uppercase tracking-[0.12em] text-muted">
+            {label}
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <button
+      type="button"
+      data-team-trigger
+      data-team-id={team.id}
+      class="mt-0.5 w-full rounded-lg bg-brand-navy py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#003d6b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red"
+    >
+      Ver análisis →
+    </button>
+  </div>
+</article>

@@ -1,0 +1,54 @@
+---
+interface Props {
+  year?: number;
+}
+const { year = 2026 } = Astro.props;
+
+const GLOSSARY: Array<Array<{ term: string; def: string }>> = [
+  [
+    { term: "G", def: "Ganados" },
+    { term: "P", def: "Perdidos" },
+    { term: "PCT", def: "Porcentaje de Victorias" },
+    { term: "DIF", def: "Diferencia" },
+    { term: "U10", def: "Últimos 10 juegos" },
+    { term: "RACHA", def: "Racha" },
+  ],
+  [
+    { term: "CA", def: "Carreras anotadas" },
+    { term: "CP", def: "Carreras permitidas" },
+    { term: "DIF C", def: "Diferencia de carreras" },
+    { term: "CASA", def: "Récord en casa" },
+    { term: "VISITANTE", def: "Récord como visitante" },
+    { term: ">.500", def: "Récord contra equipos con porcentaje de victorias por encima de .500" },
+  ],
+];
+---
+
+<footer class="bg-surface-page">
+  <div class="shell flex flex-col gap-10 py-12">
+    <div class="flex flex-col gap-5">
+      <p class="section-kicker">Glosario</p>
+      <div class="grid grid-cols-1 gap-x-10 gap-y-2.5 md:grid-cols-2">
+        {GLOSSARY.map((column) => (
+          <dl class="flex flex-col gap-2.5">
+            {column.map(({ term, def }) => (
+              <div class="flex gap-2 font-sans text-sm">
+                <dt class="font-bold text-ink">{term}</dt>
+                <dd class="text-muted">— {def}</dd>
+              </div>
+            ))}
+          </dl>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-line bg-surface">
+    <div class="shell flex flex-col items-center gap-3 py-8 text-center">
+      <img src="/img/lmb-logo.png" alt="Liga Mexicana de Beisbol" width="48" height="48" class="h-12 w-auto" />
+      <p class="font-sans text-xs text-muted">
+        Liga Mexicana de Beisbol · Temporada {year}
+      </p>
+    </div>
+  </div>
+</footer>

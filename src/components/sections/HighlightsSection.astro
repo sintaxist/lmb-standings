@@ -1,0 +1,86 @@
+---
+import type { Highlights } from "@/lib/mlb";
+import { differentialLabel } from "@/lib/mlb";
+import SectionHeading from "@/components/ui/SectionHeading.astro";
+import FeatureCard from "@/components/ui/FeatureCard.astro";
+import TeamLogo from "@/components/ui/TeamLogo.astro";
+
+interface Props {
+  highlights: Highlights;
+}
+
+const { highlights } = Astro.props;
+const { leaderNorte, leaderSur, bestStreak, bestDiff, hotTeams } = highlights;
+---
+
+<section class="bg-surface-page py-14">
+  <div class="shell flex flex-col gap-7">
+    <SectionHeading kicker="LMB al día" title="Lo más destacado" />
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {leaderNorte && (
+        <FeatureCard
+          kicker="Líder Norte"
+          logo={leaderNorte.logo}
+          name={leaderNorte.name}
+          value={leaderNorte.pct}
+          sublabel={`${leaderNorte.wins}G · ${leaderNorte.losses}P · ${leaderNorte.gamesPlayed} JJ`}
+        />
+      )}
+      {leaderSur && (
+        <FeatureCard
+          kicker="Líder Sur"
+          logo={leaderSur.logo}
+          name={leaderSur.name}
+          value={leaderSur.pct}
+          sublabel={`${leaderSur.wins}G · ${leaderSur.losses}P · ${leaderSur.gamesPlayed} JJ`}
+        />
+      )}
+      {bestStreak && (
+        <FeatureCard
+          kicker="Mejor Racha"
+          logo={bestStreak.logo}
+          name={bestStreak.name}
+          value={bestStreak.streak.code}
+          tone="positive"
+          trendUp
+          sublabel="Victorias consecutivas"
+        />
+      )}
+      {bestDiff && (
+        <FeatureCard
+          kicker="Mayor Diferencial"
+          logo={bestDiff.logo}
+          name={bestDiff.name}
+          value={differentialLabel(bestDiff.runDifferential)}
+          tone={bestDiff.runDifferential >= 0 ? "positive" : "default"}
+          sublabel="Carreras de diferencial"
+        />
+      )}
+    </div>
+
+    {hotTeams.length > 0 && (
+      <div class="rounded-xl border border-line bg-surface p-5 shadow-[0_2px_10px_rgba(0,0,0,0.05)]">
+        <p class="section-kicker">Equipos en forma</p>
+        <p class="mt-1 font-sans text-xs text-muted">
+          7 o más victorias en los últimos 10 juegos
+        </p>
+        <div class="mt-4 grid grid-cols-1 divide-y divide-line sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          {hotTeams.map((team) => (
+            <div class="flex items-center gap-3 py-3 sm:px-5 sm:py-0">
+              <TeamLogo src={team.logo} name={team.name} size={44} />
+              <div>
+                <p class="font-sans text-xs font-bold uppercase tracking-wide text-ink">
+                  {team.name}
+                </p>
+                <p class="font-display text-xl leading-none text-positive tabular">
+                  {team.lastTen.label}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
