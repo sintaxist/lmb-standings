@@ -8,11 +8,15 @@ const { updatedLabel, stale = false } = Astro.props;
 ---
 
 <header class="relative isolate overflow-hidden border-t-4 border-brand-red bg-ink">
-  <!-- Foto de fondo + velo oscuro para legibilidad -->
+  <!-- Foto de fondo + velo oscuro para legibilidad. Es el LCP: carga prioritaria. -->
   <img
-    src="/img/hero-bg.png"
+    src="/img/hero-bg.webp"
     alt=""
     aria-hidden="true"
+    width="1440"
+    height="399"
+    fetchpriority="high"
+    decoding="async"
     class="absolute inset-0 h-full w-full object-cover opacity-50"
   />
   <div

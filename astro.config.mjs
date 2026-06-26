@@ -11,4 +11,8 @@ export default defineConfig({
   output: "server",
   adapter: vercel(),
   integrations: [tailwind({ applyBaseStyles: false })],
+  build: {
+    // Inserta el CSS en el <head> para evitar un request que bloquea el render.
+    inlineStylesheets: "always",
+  },
 });

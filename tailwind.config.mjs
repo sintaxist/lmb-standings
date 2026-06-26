@@ -18,7 +18,9 @@ export default {
           page: "#f2f2f7", // fondo de página
         },
         line: "#e5e7eb", // Border Color
-        muted: "#8e8e93", // Gray — texto secundario
+        // Gray — texto secundario. Oscurecido respecto al original (#8e8e93)
+        // para cumplir contraste AA (≥4.5:1) sobre fondos claros.
+        muted: "#6b6b71",
         positive: {
           DEFAULT: "#15803d", // Green — rachas/diferenciales positivos
           soft: "#f0fdf4", // Green Light

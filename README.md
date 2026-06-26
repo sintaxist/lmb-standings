@@ -118,7 +118,11 @@ funciona aunque el script no llegue a ejecutarse. Soporta:
 - **Tokens** extraídos de las variables de Figma (colores, tipografías) viven en
   [`tailwind.config.mjs`](tailwind.config.mjs); los componentes usan utilidades
   semánticas (`brand-red`, `surface-page`, `positive`…), no hex sueltos.
-- **Tipografías:** Oswald (condensada, títulos y cifras) + Inter (cuerpo).
+- **Tipografías:** Oswald (condensada, títulos y cifras) + Inter (cuerpo),
+  **auto-hospedadas** vía `@fontsource` (sin request bloqueante a Google Fonts).
+- **Rendimiento:** imágenes propias en WebP/redimensionadas (hero 1 MB → 56 KB),
+  CSS insertado en el `<head>` (`inlineStylesheets: "always"`), `fetchpriority`
+  en la imagen LCP y `preconnect` al CDN de logos.
 - **Assets:** los logos de los equipos se sirven desde su URL original (CDN de
   la MLB, `mlbstatic.com/team-logos/{id}.svg`), sin almacenarlos. El fondo del
   hero, el logo LMB (también usado como favicon) y el banner del patrocinador se
