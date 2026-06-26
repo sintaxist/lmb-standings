@@ -31,10 +31,10 @@ export default {
         },
       },
       fontFamily: {
-        // Oswald: condensada atlética para títulos y cifras (look del Figma).
-        display: ["Oswald", "Arial Narrow", "system-ui", "sans-serif"],
-        // Inter: cuerpo y etiquetas.
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        // Bebas Neue: condensada display para títulos y cifras (branding LMB).
+        display: ["'Bebas Neue'", "Oswald", "Impact", "sans-serif"],
+        // Montserrat: cuerpo y etiquetas.
+        sans: ["Montserrat", "system-ui", "-apple-system", "sans-serif"],
       },
       maxWidth: {
         shell: "1200px",
