@@ -10,9 +10,9 @@ const { kicker, title, rule = true } = Astro.props;
 ---
 
 <div class="flex flex-col gap-1.5">
-  <p class="section-kicker">{kicker}</p>
+  <p class="section-kicker tracking-widest">{kicker}</p>
   <div class="flex items-center gap-4">
-    <h2 class="section-title">{title}</h2>
+    <h2 class="section-title tracking-wider">{title}</h2>
     <slot />
     {rule && (
       <span
