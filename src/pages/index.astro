@@ -14,6 +14,15 @@ import { loadStandingsPage } from "@/lib/page-data";
 // Aquí solo repartimos el resultado a cada sección.
 const { snapshot, highlights, details, updatedLabel, hasError } =
   await loadStandingsPage();
+
+// Caché de CDN (Vercel): sirve el HTML 60s y revalida en segundo plano.
+// Si la API falló (sin datos), no cacheamos para reintentar en la próxima visita.
+Astro.response.headers.set(
+  "Cache-Control",
+  hasError
+    ? "no-store"
+    : "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
+);
 ---
 
 <BaseLayout>

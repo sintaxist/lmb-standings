@@ -7,15 +7,37 @@ interface Props {
 
 const { details } = Astro.props;
 
-// Filas de la sección "En números": etiqueta + id del valor a rellenar.
-const NUMBER_ROWS = [
-  { id: "tm-league-rank", label: "Posición en la liga" },
-  { id: "tm-div-record", label: "Récord en su división" },
-  { id: "tm-rpg", label: "Carreras por juego" },
-  { id: "tm-dif", label: "Diferencia de carreras" },
-  { id: "tm-expected", label: "Récord esperado" },
-  { id: "tm-magic", label: "Número mágico" },
-] as const;
+// Grupos de stats: cada fila es etiqueta + id del valor + tooltip opcional.
+type Row = { id: string; label: string; tip?: string };
+
+const POSITION: Row[] = [
+  { id: "tm-div-rank", label: "En su división", tip: "Lugar que ocupa dentro de su división" },
+  { id: "tm-league-rank", label: "En la liga", tip: "Lugar que ocupa entre todos los equipos de la liga" },
+  { id: "tm-gb", label: "Juegos detrás del líder", tip: "Cuántos juegos lo separan del primer lugar de su división" },
+  { id: "tm-div-record", label: "Récord en su división", tip: "Ganados-perdidos jugando solo contra equipos de su división" },
+];
+
+const RUNS: Row[] = [
+  { id: "tm-rs", label: "Carreras anotadas", tip: "Total de carreras a favor en la temporada" },
+  { id: "tm-ra", label: "Carreras permitidas", tip: "Total de carreras en contra en la temporada" },
+  { id: "tm-dif", label: "Diferencia de carreras", tip: "Carreras anotadas menos las permitidas" },
+  { id: "tm-rpg-for", label: "Anota por juego", tip: "Promedio de carreras a favor por partido" },
+  { id: "tm-rpg-against", label: "Permite por juego", tip: "Promedio de carreras en contra por partido" },
+];
+
+const PROJECTION: Row[] = [
+  { id: "tm-expected", label: "Récord esperado", tip: "El récord que “debería” tener según sus carreras a favor y en contra" },
+  { id: "tm-magic", label: "Número mágico", tip: "Victorias propias (o derrotas del rival) que le faltan para asegurar su división" },
+];
+
+const GROUPS: Array<{ title: string; rows: Row[] }> = [
+  { title: "Posición", rows: POSITION },
+  { title: "Carreras", rows: RUNS },
+  { title: "Proyección", rows: PROJECTION },
+];
+
+const labelClass =
+  "cursor-help underline decoration-dotted decoration-muted/40 underline-offset-4 outline-none focus-visible:decoration-ink";
 ---
 
 <!-- Detalle por equipo, consumido por el controlador del modal en cliente -->
@@ -23,7 +45,7 @@ const NUMBER_ROWS = [
 
 <dialog
   id="team-modal"
-  class="m-auto max-h-[90vh] w-[min(94vw,560px)] overflow-hidden rounded-2xl border border-line bg-surface p-0 shadow-2xl backdrop:bg-black/55 backdrop:backdrop-blur-sm"
+  class="m-auto max-h-[90vh] w-[min(94vw,540px)] overflow-hidden rounded-2xl border border-line bg-surface p-0 shadow-2xl backdrop:bg-black/55 backdrop:backdrop-blur-sm"
   aria-labelledby="tm-name"
 >
   <!-- Cabecera oscura -->
@@ -49,12 +71,12 @@ const NUMBER_ROWS = [
 
   <!-- Cuerpo (scrolleable) -->
   <div class="max-h-[calc(90vh-104px)] divide-y divide-line overflow-y-auto px-6">
-    <!-- Resumen en lenguaje claro -->
-    <p id="tm-intro" class="py-5 font-sans text-sm leading-relaxed text-ink"></p>
+    <!-- Resumen claro -->
+    <p id="tm-intro" class="py-4 font-sans text-sm leading-relaxed text-ink"></p>
 
-    <!-- Su temporada -->
+    <!-- Récord de la temporada -->
     <section class="py-5">
-      <h3 class="font-sans text-xs font-bold uppercase tracking-[0.14em] text-muted">Su temporada</h3>
+      <h3 class="font-sans text-xs font-bold uppercase tracking-[0.14em] text-muted">Récord de la temporada</h3>
       <div class="mt-3 flex items-end justify-between">
         <p>
           <span id="tm-wins" class="font-display text-3xl leading-none text-positive tabular"></span>
@@ -71,36 +93,43 @@ const NUMBER_ROWS = [
       <p id="tm-season-caption" class="mt-2 font-sans text-xs text-muted"></p>
     </section>
 
-    <!-- En números -->
-    <section class="py-5">
-      <h3 class="font-sans text-xs font-bold uppercase tracking-[0.14em] text-muted">En números</h3>
-      <dl class="mt-3 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
-        {NUMBER_ROWS.map((row) => (
-          <div class="flex items-baseline justify-between gap-3">
-            <dt class="font-sans text-sm text-muted">{row.label}</dt>
-            <dd id={row.id} class="font-sans text-sm font-semibold text-ink tabular"></dd>
-          </div>
-        ))}
-      </dl>
-      <p class="mt-3 font-sans text-[11px] leading-relaxed text-muted/80">
-        <strong class="font-semibold">Récord esperado:</strong> el que “debería” tener según las carreras a favor y en contra.
-        <strong class="font-semibold">Número mágico:</strong> victorias que le faltan para asegurar su división.
-      </p>
-    </section>
+    <!-- Grupos de stats -->
+    {GROUPS.map((group) => (
+      <section class="py-5">
+        <h3 class="font-sans text-xs font-bold uppercase tracking-[0.14em] text-muted">{group.title}</h3>
+        <dl class="mt-3 flex flex-col gap-2.5">
+          {group.rows.map((row) => (
+            <div class="flex items-baseline justify-between gap-3">
+              <dt class="font-sans text-sm text-muted">
+                {row.tip ? (
+                  <span data-tip={row.tip} tabindex="0" class={labelClass}>{row.label}</span>
+                ) : (
+                  row.label
+                )}
+              </dt>
+              <dd id={row.id} class="font-sans text-sm font-semibold text-ink tabular"></dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    ))}
 
     <!-- Forma reciente -->
     <section class="py-5">
       <h3 class="font-sans text-xs font-bold uppercase tracking-[0.14em] text-muted">Forma reciente</h3>
-      <div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2">
-        <p class="font-sans text-sm text-ink">
-          Últimos 10 juegos:
-          <span id="tm-lastten" class="font-semibold tabular"></span>
-        </p>
-        <p class="flex items-center gap-2 font-sans text-sm text-ink">
-          <span id="tm-streak"></span>
-          <span id="tm-streak-text" class="text-muted"></span>
-        </p>
-      </div>
+      <dl class="mt-3 flex flex-col gap-2.5">
+        <div class="flex items-baseline justify-between gap-3">
+          <dt class="font-sans text-sm text-muted">Últimos 10 juegos</dt>
+          <dd id="tm-lastten" class="font-sans text-sm font-semibold text-ink tabular"></dd>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <dt class="font-sans text-sm text-muted">Racha actual</dt>
+          <dd class="flex items-center gap-2">
+            <span id="tm-streak"></span>
+            <span id="tm-streak-text" class="font-sans text-xs text-muted"></span>
+          </dd>
+        </div>
+      </dl>
     </section>
 
     <!-- Por situación -->
@@ -127,5 +156,7 @@ const NUMBER_ROWS = [
 
 <script>
   import { initTeamModal } from "@/scripts/team-modal";
+  import { initTooltips } from "@/scripts/tooltips";
   initTeamModal();
+  initTooltips();
 </script>

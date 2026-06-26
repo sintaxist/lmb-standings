@@ -13,10 +13,31 @@ tiempo real por la **MLB Stats API**.
 ```bash
 npm install
 npm run dev      # desarrollo en http://localhost:4321
-npm run build    # build SSR (genera ./dist)
-npm run start    # sirve el build:  node ./dist/server/entry.mjs
+npm run build    # build SSR para Vercel (genera .vercel/output)
 npm run check    # type-check de Astro/TS
 ```
+
+---
+
+## Deploy (Vercel)
+
+El proyecto usa el adapter **`@astrojs/vercel`** (`output: "server"`), así que se
+despliega como funciones serverless con SSR. Dos formas:
+
+**Desde GitHub (recomendado):** importar el repo en
+[vercel.com/new](https://vercel.com/new) → Vercel detecta Astro y construye solo.
+Cada push a `main` redepliega.
+
+**Con la CLI:**
+
+```bash
+npm i -g vercel
+vercel          # primer deploy (preview) + vincula el proyecto
+vercel --prod   # deploy a producción
+```
+
+La página emite `Cache-Control: s-maxage=60, stale-while-revalidate=300`, de modo
+que el CDN de Vercel cachea el HTML 60s y absorbe los picos de tráfico.
 
 ---
 

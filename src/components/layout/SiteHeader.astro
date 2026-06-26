@@ -28,16 +28,16 @@ const { updatedLabel, stale = false } = Astro.props;
       <span class="text-brand-red">de Beisbol</span>
     </h1>
 
-    <div class="flex w-full max-w-xl items-center gap-4">
-      <span class="h-px flex-1 bg-gradient-to-l from-white/40 to-transparent" aria-hidden="true"></span>
-      <p class="whitespace-nowrap font-sans text-sm font-semibold uppercase tracking-[0.28em] text-white/70">
+    <div class="flex w-full max-w-2xl items-center gap-4 justify-center">
+      <span class="h-px flex-1 bg-white hidden md:block" aria-hidden="true"></span>
+      <p class="md:whitespace-nowrap font-sans text-sm font-semibold uppercase tracking-[0.28em] text-white/70">
         Tabla de Posiciones · Temporada 2026
       </p>
-      <span class="h-px flex-1 bg-gradient-to-r from-white/40 to-transparent" aria-hidden="true"></span>
+      <span class="h-px flex-1 bg-white hidden md:block" aria-hidden="true"></span>
     </div>
 
     {updatedLabel && (
-      <p class="mt-1 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-sans text-xs text-white/70 ring-1 ring-white/15 backdrop-blur">
+      <p class="mt-1 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-sans text-xs text-white ring-1 ring-white/15 backdrop-blur">
         {stale ? "Datos en caché · " : "Actualizado "}{updatedLabel}
       </p>
     )}

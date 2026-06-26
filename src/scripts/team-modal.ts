@@ -129,21 +129,23 @@ export function initTeamModal(): void {
       `${d.name} gana el ${pct}% de sus partidos (unos ${(d.pctValue * 10).toFixed(1)} de cada 10).`
     );
 
-    // Su temporada
+    // Récord de la temporada
     setText("tm-wins", d.wins);
     setText("tm-losses", d.losses);
     if (bar) bar.style.width = `${pct}%`;
     setText("tm-season-caption", seasonCaption(d));
 
-    // En números
+    // Posición
+    setText("tm-div-rank", `#${d.rank}`);
     setText("tm-league-rank", `#${d.leagueRank}`);
+    setText("tm-gb", d.gamesBack);
     setText("tm-div-record", d.divisionRecord ? d.divisionRecord.record : "—");
-    setText(
-      "tm-rpg",
-      `${d.runsPerGame.toFixed(1)} a favor · ${d.runsAllowedPerGame.toFixed(1)} en contra`
-    );
+
+    // Carreras
+    setText("tm-rs", d.runsScored);
+    setText("tm-ra", d.runsAllowed);
     if (dif) {
-      dif.textContent = `${d.runDifferential} (${d.runsScored}-${d.runsAllowed})`;
+      dif.textContent = d.runDifferential;
       dif.className = `font-sans text-sm font-semibold tabular ${
         d.runDiffValue > 0
           ? "text-positive"
@@ -152,6 +154,10 @@ export function initTeamModal(): void {
             : "text-ink"
       }`;
     }
+    setText("tm-rpg-for", d.runsPerGame.toFixed(1));
+    setText("tm-rpg-against", d.runsAllowedPerGame.toFixed(1));
+
+    // Proyección
     setText("tm-expected", d.expected ? d.expected.record : "—");
     setText("tm-magic", d.magicNumber === "-" ? "—" : d.magicNumber);
 
